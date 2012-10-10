@@ -1,8 +1,6 @@
 package controllers
 
 import play.api._
-import libs.json.JsBoolean
-import libs.json.JsObject
 import play.api.libs.concurrent.Akka
 import libs.json._
 import play.api.mvc._
@@ -27,7 +25,6 @@ object Application extends Controller {
     }
   }
 
-  //case class JsonError(msg: String, error:Boolean = true)
   def JsonError(message: String) = JsObject(
     List("error" -> JsBoolean(true), "message" -> JsString(message))
   )

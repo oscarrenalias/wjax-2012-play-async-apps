@@ -10,6 +10,7 @@ import play.api.libs.json.Writes
 import play.api.libs.json.JsArray
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsString
+import play.api.libs.json.JsNumber
 
 case class SalesOrder(id:String, user:String, status:OrderStatus, items:SalesOrder.ItemType)
 
@@ -29,7 +30,7 @@ object SalesOrder{
       "status" -> JsString(o.status.toString),
       "items" -> JsArray(
         o.items.map(item => item match { case (id, (amount, desc)) =>
-          JsObject(List("id" -> JsString(id.toString), "amount" -> JsString(amount.toString) /*, "description" -> JsString(desc)*/))
+          JsObject(List("id" -> JsNumber(id), "amount" -> JsNumber(amount), "description" -> JsString(desc)))
         }).toSeq)
     )
     )
