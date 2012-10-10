@@ -1,0 +1,1 @@
+This repository contains the presentation and code that I will utilize in my presentation in WJAX Munich 2012: http://it-republik.de/konferenzen/ext_scripts/v2/php/sessions-popup.php?module=wjax2012&id=23547
