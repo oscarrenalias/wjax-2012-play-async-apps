@@ -14,17 +14,6 @@ object Application extends Controller {
     Ok(views.html.index("Your new application is ready."))
   }
 
-  def WithFuture[T](timeoutSeconds:Int)(f: => T)(implicit jsonHelper:Writes[T]) = {
-    Akka.future {
-      f
-    } orTimeout(Ok(Json.toJson(JsonError("Timeout while reading data"))), 5, java.util.concurrent.TimeUnit.SECONDS) map { result =>
-      result.fold(
-        data => Ok(Json.toJson(data)),
-        error => Ok(Json.toJson(JsonError("Error")))
-      )
-    }
-  }
-
   def JsonError(message: String) = JsObject(
     List("error" -> JsBoolean(true), "message" -> JsString(message))
   )
@@ -39,6 +28,28 @@ object Application extends Controller {
           error => Ok(Json.toJson(JsonError("Error")))
         )
       }
+    }
+  }
+
+  /**
+   * Some glue code can make code look prettier
+   */
+  def WithFuture[T](timeoutSeconds:Int)(f: => T)(implicit jsonHelper:Writes[T]) = {
+    Async {
+      Akka.future {
+        f
+      } orTimeout(Ok(Json.toJson(JsonError("Timeout while reading data"))), timeoutSeconds, java.util.concurrent.TimeUnit.SECONDS) map { result =>
+        result.fold(
+          data => Ok(Json.toJson(data)),
+          error => Ok(Json.toJson(JsonError("Error")))
+        )
+      }
+    }
+  }
+
+  def prettyOrders = Action {
+    WithFuture(1) {
+      SalesOrder.findAll
     }
   }
 }

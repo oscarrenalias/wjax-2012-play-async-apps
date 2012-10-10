@@ -7,6 +7,7 @@ GET     /                           controllers.Application.index
 
 # endpoint that returns some json data
 GET     /orders                     controllers.Application.orders
+GET     /orders2                    controllers.Application.prettyOrders
 
 # endpoint that performs a call to another service and then returns a modified result
 GET     /repos/:user                controllers.Service.userRepos(user: String)
