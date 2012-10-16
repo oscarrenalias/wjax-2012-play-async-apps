@@ -5,5 +5,11 @@
 # Home page
 GET     /                           controllers.Application.index
 
+# websocket route
+GET     /websocket                  controllers.Application.websocket
+
+# test websocket page
+GET     /wstest                     controllers.Application.testSocket
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
