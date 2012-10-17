@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>  <title>WebSocket Test</title>
+        <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+        <script language="javascript" type="text/javascript">
+            (function() {
+                var socket;
+
+                $(document).ready(function() {
+                    // connect to the websocket
+                    $('#wsConnect').click(function(ev) {
+                        if(socket == null) {
+                            socket = new WebSocket($('#wsUri').val());
+
+                            socket.onopen = function(ev) {
+                                console.log("Connected");
+                            }
+
+                            socket.onclose = function(ev) {
+                                console.log("Socket disconnected");
+                            }
+
+                            socket.onmessage = function(ev) {
+                                var content = "<li>" + ev.data + "</li>";
+                                $('#wsResponses').prepend(content);
+                                $('#wsResponses li:first').hide().slideDown();
+                            }
+
+                            socket.onerror = function(ev) {
+                                console.log("Error: " + ev.data)
+                            }
+
+                            $('#wsConnect').val("Disconnect");
+                        }
+                        else {
+                            socket.close();
+                            socket = null;  // nasty, but good enough I guess
+                            $('#wsConnect').val("Connect");
+                        }
+                    });
+
+                    // send data
+                    $('#wsSend').click(function(ev) {
+                        if(socket == null) {
+                            alert("You must connect to the websocket first");
+                            return;
+                        }
+
+                        var content = $('#wsContent').val();
+                        socket.send(content);
+                    });
+                })
+            })();
+        </script>
+        <style type="text/css">
+            #wsInput {
+                position:relative;
+                left:0;
+                top:0;
+                width: 50%;
+                float:left;
+            }
+
+            #wsOutput {
+                position:relative;
+                left:0;
+                top:0;
+                float:left;
+                width:50%;
+            }
+
+            #wsResponses {
+                list-style-type: none;
+                padding: 0px;
+                margin: 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="wsInput">
+            <h2>WebSocket Input</h2>
+            Websocket endpoint:<br/>
+            <input type="text" name="wsUri" id="wsUri" value="ws://localhost:9000/echo" style="width: 300px"/>
+            <input type="button" name="wsConnect" id="wsConnect" value="Connect" />
+            <br/>
+            Send content:<br/>
+            <textarea name="wsContent" id="wsContent" style="width: 300px" rows="7"></textarea><br/>
+            <input type="button" name="wsSend" id="wsSend" value="Send" />
+        </div>
+        <div id="wsOutput">
+            <h2>WebSocket Responses</h2>
+            <div><ul id="wsResponses"></ul></div>
+        </div>
+    </body>
+</html>

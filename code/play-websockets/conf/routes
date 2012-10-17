@@ -2,14 +2,24 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# Displays the websocket test page
 GET     /                           controllers.Application.index
 
-# websocket route
-GET     /websocket                  controllers.Application.websocket
+#
+# websocket routes
+#
 
-# test websocket page
-GET     /wstest                     controllers.Application.testSocket
+# says 'Hello'
+GET     /hello                  controllers.Application.websocketHello
+# synchronous and asynchronous versions of an echo service
+GET     /echo                   controllers.Application.echo
+GET     /asyncecho              controllers.Application.asyncEcho
+# returns the time in 5 second intervals
+GET     /time                   controllers.Application.websocketTime
+# cats the given file passed as a parameter in the websocket request
+GET     /cat                   controllers.Application.catFile
+# test - fixme later
+GET     /test                   controllers.Application.test
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
