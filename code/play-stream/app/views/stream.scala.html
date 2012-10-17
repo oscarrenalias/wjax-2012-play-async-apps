@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>  <title>WebSocket Test</title>
+    <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+    <script language="javascript">
+        $(document).ready(function() {
+            $('#start').click(function() {
+                var stream = new EventSource("http://localhost:9000/stream");
+                stream.onmessage = function(ev) {
+                    console.log(ev);
+                    var message = JSON.parse(ev.data);    // insecure, but good enough for this example
+                    var content = "<li>" + message.user + ": " + message.message + "</li>";
+                    $('#events').prepend(content);
+                }
+                stream.onerror = function(ev) {
+                    alert("Error reading event data: " + ev);
+                }
+            })
+        })
+    </script>
+    <body>
+        <input type="button" id="start" value="Start" />
+        <div>
+            <ul id="events" style="list-style-type:none;margin:0;padding:0"></ul>
+        </div>
+    </body>
+</head>
