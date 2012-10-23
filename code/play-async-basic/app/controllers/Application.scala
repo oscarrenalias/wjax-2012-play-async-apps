@@ -18,6 +18,35 @@ object Application extends Controller {
     List("error" -> JsBoolean(true), "message" -> JsString(message))
   )
 
+  /**
+   * This is the most basic way to have an asynchronous response, using the AsyncResult placeholder, which
+   * receives a Promise[Result]
+   * @return
+   */
+  def basicAsyncResponse = Action {
+    val p = Akka.future {            [[]]
+      Ok("I am done")
+    }
+    new AsyncResult(p)
+  }
+
+  /**
+   * Improved implementation of the action above, now using a timeout and the Async construct
+   * @return
+   */
+  def betterAsyncResponse = Action {
+    Async {
+      Akka.future {
+        "I am done"
+      } orTimeout(Ok("There was an error"), 5, java.util.concurrent.TimeUnit.SECONDS) map { result =>
+        result.fold(
+          content => Ok("content: " + content),
+          error => Ok("There was an error: " + error.toString)
+        )
+      }
+    }
+  }
+
   def orders = Action {
     Async {
       Akka.future {

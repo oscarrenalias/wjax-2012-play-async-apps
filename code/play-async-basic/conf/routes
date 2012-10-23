@@ -5,6 +5,10 @@
 # Home page
 GET     /                           controllers.Application.index
 
+# simple async response
+GET     /simple                     controllers.Application.basicAsyncResponse
+GET     /better                     controllers.Application.betterAsyncResponse
+
 # endpoint that returns some json data
 GET     /orders                     controllers.Application.orders
 GET     /orders2                    controllers.Application.prettyOrders
