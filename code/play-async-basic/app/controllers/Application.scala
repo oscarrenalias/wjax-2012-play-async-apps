@@ -24,7 +24,7 @@ object Application extends Controller {
    * @return
    */
   def basicAsyncResponse = Action {
-    val p = Akka.future {            [[]]
+    val p = Akka.future {
       Ok("I am done")
     }
     new AsyncResult(p)
