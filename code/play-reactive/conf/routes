@@ -1,0 +1,16 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index
+
+GET     /stream                     controllers.Application.stream
+GET     /plainstream                     controllers.Application.plainStream
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# pub-sub using non-blocking reactive iteratees
+GET     /api/sub                        controllers.ReactiveAPI.sub
+GET     /api/pub/:msg                   controllers.ReactiveAPI.pub(msg: String)
