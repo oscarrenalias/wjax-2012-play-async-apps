@@ -12,5 +12,5 @@ GET     /plainstream                     controllers.Application.plainStream
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # pub-sub using non-blocking reactive iteratees
-GET     /api/sub                        controllers.ReactiveAPI.sub
-GET     /api/pub/:msg                   controllers.ReactiveAPI.pub(msg: String)
+GET     /api/sub                        controllers.PubSubController.sub
+GET     /api/pub/:msg                   controllers.PubSubController.pub(msg: String)

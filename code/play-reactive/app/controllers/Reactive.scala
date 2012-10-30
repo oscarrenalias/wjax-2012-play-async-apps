@@ -1,10 +1,11 @@
 package controllers
 
-import play.api.libs.iteratee.{Iteratee, Input, Enumerator}
+import play.api.libs.iteratee.{PushEnumerator, Iteratee, Input, Enumerator}
 import play.api.libs.concurrent.Akka
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
 import play.api.Logger
+import akka.actor.{Actor, Props}
 
 /**
  * This code contains a very naive implementation of a model class implemented in a reactive
@@ -37,24 +38,4 @@ object ReactiveUserModel {
 
 object Reactive extends Controller {
   val userIteratee = Iteratee.foreach[User](u => println(u))
-}
-
-object ReactiveAPI extends Controller {
-  // this generates events for all connected clients
-  val apiEnumerator = Enumerator.imperative(
-    onStart = println("Starting evented API"),
-    onComplete = println("That's all folks"),
-    onError = (error:String, input:Input[String]) => println("There was an error: " + error)
-  )
-
-  def sub = Action {
-    val clientSink = Iteratee.consume[String]()
-    Ok.stream(apiEnumerator)
-  }
-
-  def pub(s:String) = Action {
-    Logger.debug("Pushing data to subscribers: " + s)
-    apiEnumerator.push(s)
-    Ok("Pushed!")
-  }
 }
