@@ -1,0 +1,21 @@
+@main("Reactive Models") {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#load').click(function() {
+                $.ajax({
+                    url: "@routes.Reactive.get",
+                    success: function(data) {
+                        console.log("Receiving data: " + data);
+                        $('#content').html(data);
+                    }
+                })
+            })
+        });
+    </script>
+}
+<div id="main">
+    <input type="button" name="load" id="load" value="Load users"/>
+    <div id="content">
+        <!-- content goes here -->
+    </div>
+</div>

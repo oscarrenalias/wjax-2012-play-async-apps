@@ -14,3 +14,7 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 # pub-sub using non-blocking reactive iteratees
 GET     /api/sub                        controllers.PubSubController.sub
 GET     /api/pub/:msg                   controllers.PubSubController.pub(msg: String)
+
+# reactive models
+GET     /models/index                   controllers.Reactive.index
+GET     /models/get                     controllers.Reactive.get

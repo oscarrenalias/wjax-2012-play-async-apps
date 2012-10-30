@@ -1,11 +1,12 @@
 package controllers
 
-import play.api.libs.iteratee.{PushEnumerator, Iteratee, Input, Enumerator}
+import play.api.libs.iteratee._
 import play.api.libs.concurrent.Akka
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
 import play.api.Logger
 import akka.actor.{Actor, Props}
+import play.api.libs.json.{JsString, Json, JsObject, Writes}
 
 /**
  * This code contains a very naive implementation of a model class implemented in a reactive
@@ -17,20 +18,18 @@ import akka.actor.{Actor, Props}
 
 case class User(name:String, email:Option[String] = None, password:Option[String] = None)
 
+
 object ReactiveUserModel {
   def getAll = {
-    val userEnumerator = Enumerator.imperative(
-      onStart = println("Starting"),
-      onComplete = println("Complete"),
+    val userList = List(User("oscar"), User("david"), User("john"), User("jane"))
+
+    val userEnumerator = Enumerator.pushee[User] (
+      onStart = pushee => {
+        userList.foreach { user => pushee.push(user) }
+        pushee.close()
+      },
       onError = (error:String, input:Input[User]) => println("there was an error: " + error)
     )
-
-    // slowly get stuff from the database
-    Akka.future {
-      val userList = List(User("oscar"), User("david"), User("john"), User("jane"))
-      userList.foreach(u => { println("pushing: " + u.name); userEnumerator.push(u)})
-
-    }
 
     userEnumerator
   }
@@ -38,4 +37,20 @@ object ReactiveUserModel {
 
 object Reactive extends Controller {
   val userIteratee = Iteratee.foreach[User](u => println(u))
+
+  val asChunk = Enumeratee.map[User] { u => u.toString + "\n\n" }
+
+  implicit object UserJsonWriter extends Writes[User] {
+    override def writes(u:User) = JsObject(List("user" -> JsString(u.name), "email" -> JsString(u.email.getOrElse(""))))
+  }
+
+  val asJson = Enumeratee.map[User] { u => Json.toJson(u) }
+
+  def index = Action {
+    Ok(views.html.users.render())
+  }
+
+  def get = Action {
+    Ok.stream(ReactiveUserModel.getAll &> asJson)
+  }
 }
