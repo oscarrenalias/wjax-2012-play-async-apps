@@ -19,7 +19,7 @@ object Application extends Controller {
   )
 
   /**
-   * This is the most basic way to have an asynchronous response, using the AsyncResult placeholder, which
+   * This is the most basic way to have an asynchronous response, using the AsyncResult result object, which
    * receives a Promise[Result]
    * @return
    */
@@ -27,7 +27,7 @@ object Application extends Controller {
     val p = Akka.future {
       Ok("I am done")
     }
-    new AsyncResult(p)
+    AsyncResult(p)
   }
 
   /**
