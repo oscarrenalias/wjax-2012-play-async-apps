@@ -36,10 +36,6 @@ object ReactiveUserModel {
 }
 
 object Reactive extends Controller {
-  val userIteratee = Iteratee.foreach[User](u => println(u))
-
-  val asChunk = Enumeratee.map[User] { u => u.toString + "\n\n" }
-
   implicit object UserJsonWriter extends Writes[User] {
     override def writes(u:User) = JsObject(List("user" -> JsString(u.name), "email" -> JsString(u.email.getOrElse(""))))
   }
