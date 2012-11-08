@@ -16,10 +16,6 @@ GET     /echo                   controllers.Application.echo
 GET     /asyncecho              controllers.Application.asyncEcho
 # returns the time in 5 second intervals
 GET     /time                   controllers.Application.websocketTime
-# cats the given file passed as a parameter in the websocket request
-GET     /cat                   controllers.Application.catFile
-# test - fixme later
-GET     /test                   controllers.Application.test
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
