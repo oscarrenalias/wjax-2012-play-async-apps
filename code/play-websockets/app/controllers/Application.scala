@@ -12,10 +12,18 @@ import akka.util.duration._
 
 object Application extends Controller {
   
+  //
+  // Displays the page with the WebSocket Javascript code that can be used to connect
+  // to the different endpoints for testing.
+  //
   def index = Action {
     Ok(views.html.websocket())
   }
 
+  //
+  // The most basic WebSocket possible; will reply with "hello" once a client connects, and
+  // immediately close the connection
+  //
   def websocketHello = WebSocket.using[String] { request =>
     val in = Iteratee.foreach[String](println).mapDone { _ =>
       println("Disconnected")
@@ -25,7 +33,10 @@ object Application extends Controller {
     (in, out)
   }
 
-  // standard 'echo' websocket service
+  //
+  // Standard 'echo' websocket service
+  // Use "ws://localhost:9000/asyncEcho" to connect to this endpoint from JavaScript code
+  //
   def echo = WebSocket.using[String] { request =>
     val out = Enumerator.imperative[String]()
     val in = Iteratee.foreach[String] { message =>
@@ -35,7 +46,10 @@ object Application extends Controller {
     (in, out)
   }
 
+  //
   // 'echo' websocket service implemented using asynchronous capabilities
+  // Use "ws://localhost:9000/asyncecho" to connect to this endpoint from JavaScript code
+  //
   def asyncEcho = WebSocket.async[String] { request =>
     Akka.future {
       val out = Enumerator.imperative[String]()
@@ -46,18 +60,11 @@ object Application extends Controller {
     }
   }
 
-  // returns file contents via websocket
-  def catFile = WebSocket.async[String] { request =>
-    Akka.future {
-      val fileEnumerator = Enumerator.fromFile(new File("/etc/passwd")).map(x => new String(x))
-
-      val in = Iteratee.foreach[String]{println(_)}
-
-      (in, fileEnumerator)
-    }
-  }
-
-  // websocket service that returns the time when connected to the endpoint, very 5 seconds or so
+  //
+  // websocket service that returns the time when connected to the endpoint, every 5 seconds or so
+  // Use "ws://localhost:9000/time" to connect to this endpoint from JavaScript code, and the
+  // time will be automatically delivered via the WebSocket connection
+  //
   def websocketTime = WebSocket.async[String] { request =>
     Akka.future {
       val timeEnumerator = Enumerator.fromCallback { () =>
@@ -68,20 +75,5 @@ object Application extends Controller {
 
       (in, timeEnumerator)
     }
-  }
-
-  def test = WebSocket.using[String]{ request =>
-    val in = Iteratee.foreach[String] { message => println(message) }
-    val channel = Enumerator.pushee[String] { pushee =>
-      pushee.push("Hello")
-      pushee.push("World")
-    }
-
-    /*val onStart = () => println("enumerator started")
-    val onComplete = () => println("enumerator complete")
-    val onError = (s:String, input:Input[String]) => println("enumerator error")
-    val out = new PushEnumerator[String](onStart, onComplete, onError)*/
-
-    (in, channel)
   }
 }
