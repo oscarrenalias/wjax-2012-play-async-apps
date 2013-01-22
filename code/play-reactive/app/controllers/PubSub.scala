@@ -48,11 +48,12 @@ object PubSub {
 object PubSubController extends Controller {
   // this generates events for all connected clients
   val consoleLogger = Iteratee.foreach[String](i => Logger.debug("message: " + i))
-    def makeEnumerator = Enumerator.imperative(
-      onStart = Logger.info("Starting Enumerator"),
-      onComplete = Logger.info("That's all folks"),
-      onError = (error:String, input:Input[String]) => println("There was an error: " + error)
-    )
+
+  def makeEnumerator = Enumerator.imperative(
+    onStart = Logger.info("Starting Enumerator"),
+    onComplete = Logger.info("That's all folks"),
+    onError = (error:String, input:Input[String]) => println("There was an error: " + error)
+  )
 
   def sub(topic:String) = Action {
     val enumerator = makeEnumerator
