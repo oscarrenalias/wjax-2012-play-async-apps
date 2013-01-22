@@ -19,7 +19,12 @@ GET     /repos/:user                controllers.Service.userRepos(user: String)
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-# for the iframe demos
-GET    /wait                        controllers.PromiseExample.waitForPromise
-GET    /trigger/:text               controllers.PromiseExample.redeemPromise(text: String)
+#
+# Used by the PromiseExample controller
+#
+# This is the URL that you should point the browser to get this example started
 GET    /start                       controllers.PromiseExample.index
+# when you have loaded the /start page, visit /trigger/whatever to "unblock" all the iframes
+GET    /trigger/:text               controllers.PromiseExample.redeemPromise(text: String)
+# This is used by the iframes
+GET    /wait                        controllers.PromiseExample.waitForPromise
