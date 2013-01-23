@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.libs.concurrent.Promise
-import play.api.mvc.{Controller, Action, AsyncResult}
+import play.api.mvc.{Results, Controller, Action, AsyncResult}
 
 /**
  * This example has been presented very often by Sadek Drobi (Zenexity's CTO) but I
@@ -18,7 +18,9 @@ object PromiseExample extends Controller {
   // Action that waits until the promise has been redeemed before sending a response to clients
   //
   def waitForPromise = Action {
-    new AsyncResult(promise.map(s => Ok(s)))
+    Async {
+      promise.map(s => Ok(s))
+    }
   }
 
   //
